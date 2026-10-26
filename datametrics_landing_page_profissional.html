@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataMetrics | Inteligência de Dados, Pesquisas Eleitorais e de Mercado</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter + Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js para visualização de dados -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0B132B',
+                            800: '#1C2541',
+                            700: '#2A3A5E',
+                        },
+                        accent: {
+                            cyan: '#00F0FF',
+                            gold: '#FFB800',
+                            blue: '#3A86FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.25);
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px -5px rgba(255, 184, 0, 0.25);
+        }
+        .bg-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+        .gradient-border {
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)) border-box;
+        }
+    </style>
+</head>
+<body class="bg-navy-900 text-slate-100 font-sans antialiased selection:bg-accent-cyan selection:text-navy-900">
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-navy-900/80 backdrop-blur-md border-b border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent-blue via-accent-cyan to-accent-gold p-0.5">
+                    <div class="w-full h-full bg-navy-900 rounded-[10px] flex items-center justify-center">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-accent-cyan group-hover:scale-110 transition-transform"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading font-bold text-xl tracking-tight text-white flex items-center">
+                        DATA<span class="text-accent-cyan">METRICS</span>
+                    </span>
+                    <span class="text-[10px] text-slate-400 tracking-widest uppercase font-medium">Research & Analytics</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#inicio" class="text-slate-300 hover:text-accent-cyan transition-colors">Início</a>
+                <a href="#servicos" class="text-slate-300 hover:text-accent-cyan transition-colors">Serviços</a>
+                <a href="#diferenciais" class="text-slate-300 hover:text-accent-cyan transition-colors">Diferenciais</a>
+                <a href="#dashboard" class="text-slate-300 hover:text-accent-cyan transition-colors">Data Lab</a>
+                <a href="#simulador" class="text-slate-300 hover:text-accent-cyan transition-colors">Calculadora</a>
+                <a href="#contato" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-accent-blue to-accent-cyan text-navy-900 font-semibold hover:opacity-90 transition-all shadow-lg shadow-accent-cyan/20">
+                    Solicitar Orçamento
+                </a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg bg-navy-800 text-slate-300 hover:text-white" aria-label="Abrir Menu">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden bg-navy-800 border-b border-slate-700 px-4 pt-2 pb-6 space-y-4">
+            <a href="#inicio" class="block py-2 text-slate-300 hover:text-accent-cyan">Início</a>
+            <a href="#servicos" class="block py-2 text-slate-300 hover:text-accent-cyan">Serviços</a>
+            <a href="#diferenciais" class="block py-2 text-slate-300 hover:text-accent-cyan">Diferenciais</a>
+            <a href="#dashboard" class="block py-2 text-slate-300 hover:text-accent-cyan">Data Lab</a>
+            <a href="#simulador" class="block py-2 text-slate-300 hover:text-accent-cyan">Calculadora Amostral</a>
+            <a href="#contato" class="block w-full text-center py-3 rounded-lg bg-accent-cyan text-navy-900 font-bold">
+                Solicitar Orçamento
+            </a>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="inicio" class="relative min-h-[90vh] flex items-center justify-center bg-grid overflow-hidden py-20">
+            <!-- Background Orbs -->
+            <div class="absolute top-1/4 left-10 w-96 h-96 bg-accent-blue/10 rounded-full filter blur-[120px] pointer-events-none"></div>
+            <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent-cyan/10 rounded-full filter blur-[120px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy-800/80 border border-slate-700 text-accent-cyan text-xs sm:text-sm font-semibold mb-8 backdrop-blur-md">
+                    <span class="flex h-2 w-2 rounded-full bg-accent-cyan animate-pulse"></span>
+                    Pesquisas Registradas no TSE & Conforme LGPD
+                </div>
+
+                <!-- Main Heading -->
+                <h1 class="font-heading text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight max-w-5xl mx-auto mb-6">
+                    Transformamos Dados em <span class="bg-gradient-to-r from-accent-cyan via-accent-blue to-accent-gold bg-clip-text text-transparent">Decisões Estratégicas</span> e Resultados
+                </h1>
+
+                <p class="text-slate-300 text-lg sm:text-xl max-w-3xl mx-auto mb-10 font-normal leading-relaxed">
+                    Especialistas em pesquisas eleitorais de alta precisão, inteligência de mercado e modelagem preditiva avançada para lideranças políticas e grandes corporações.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                    <a href="#contato" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-cyan text-navy-900 font-bold text-lg hover:shadow-lg hover:shadow-accent-cyan/25 transition-all flex items-center justify-center gap-3 group">
+                        Falar com Especialista
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="#simulador" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-navy-800/80 hover:bg-navy-800 text-white font-semibold text-lg border border-slate-700 hover:border-accent-cyan/50 transition-all flex items-center justify-center gap-3">
+                        <i data-lucide="calculator" class="w-5 h-5 text-accent-cyan"></i>
+                        Simular Amostragem
+                    </a>
+                </div>
+
+                <!-- Quick Stats Banner -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-slate-800 max-w-4xl mx-auto">
+                    <div class="p-4 rounded-xl bg-navy-800/40 border border-slate-800">
+                        <div class="font-heading font-bold text-3xl text-accent-cyan mb-1">+98.4%</div>
+                        <div class="text-xs text-slate-400 font-medium">Índice de Assertividade Eleitoral</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-navy-800/40 border border-slate-800">
+                        <div class="font-heading font-bold text-3xl text-white mb-1">+500k</div>
+                        <div class="text-xs text-slate-400 font-medium">Entrevistas Realizadas</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-navy-800/40 border border-slate-800">
+                        <div class="font-heading font-bold text-3xl text-accent-gold mb-1">100%</div>
+                        <div class="text-xs text-slate-400 font-medium">Conformidade Legal TSE/LGPD</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-navy-800/40 border border-slate-800">
+                        <div class="font-heading font-bold text-3xl text-white mb-1">12+</div>
+                        <div class="text-xs text-slate-400 font-medium">Anos de Atuação Estratégica</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="servicos" class="py-24 bg-navy-800/50 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-accent-cyan text-sm font-semibold tracking-widest uppercase mb-3">Nossas Soluções</h2>
+                    <p class="font-heading text-3xl sm:text-4xl font-bold text-white">Metodologias Avançadas para Cenários Complexos</p>
+                    <p class="text-slate-400 mt-4 text-lg">Unimos rigor estatístico tradicional a algoritmos de dados modernos para oferecer diagnósticos precisos.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Service Card 1 -->
+                    <div class="bg-navy-900/80 border border-slate-800 rounded-2xl p-8 hover:border-accent-cyan/50 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+                        <div class="w-14 h-14 rounded-xl bg-accent-blue/10 border border-accent-blue/30 flex items-center justify-center text-accent-cyan mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="vote" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-2xl text-white mb-4">Pesquisa Eleitoral & Cenários Políticos</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Mapeamento detalhado da intenção de voto, rejeição, tracking diário/semanal e perfil socioeconômico do eleitorado com amostragem probabilística.
+                        </p>
+                        <ul class="space-y-2.5 text-xs text-slate-300 mb-8">
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-cyan"></i> Tracking Eleitoral em Tempo Real</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-cyan"></i> Pesquisas Registradas (TSE)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-cyan"></i> Análise de Rejeição & Transferência de Votos</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-cyan"></i> Simulação de Cenários de 2º Turno</li>
+                        </ul>
+                        <a href="#contato" class="inline-flex items-center text-sm font-semibold text-accent-cyan hover:text-white transition-colors">
+                            Saiba mais sobre inteligência política <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service Card 2 -->
+                    <div class="bg-navy-900/80 border border-slate-800 rounded-2xl p-8 hover:border-accent-gold/50 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+                        <div class="w-14 h-14 rounded-xl bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center text-accent-gold mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="shopping-bag" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-2xl text-white mb-4">Pesquisa de Mercado & Produtos</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Validação de novos produtos, testes de conceito, precificação estratégica (Van Westendorp), satisfação do cliente (NPS) e análise da concorrência.
+                        </p>
+                        <ul class="space-y-2.5 text-xs text-slate-300 mb-8">
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-gold"></i> Teste de Embalagens e Conceito</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-gold"></i> Elasticidade de Preços & Elasticidade Demanda</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-gold"></i> Mapeamento da Jornada do Consumidor</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-gold"></i> Avaliação de Share of Mind & Recall</li>
+                        </ul>
+                        <a href="#contato" class="inline-flex items-center text-sm font-semibold text-accent-gold hover:text-white transition-colors">
+                            Saiba mais sobre dados de mercado <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service Card 3 -->
+                    <div class="bg-navy-900/80 border border-slate-800 rounded-2xl p-8 hover:border-accent-blue/50 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+                        <div class="w-14 h-14 rounded-xl bg-accent-blue/10 border border-accent-blue/30 flex items-center justify-center text-accent-blue mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="line-chart" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-2xl text-white mb-4">Business Intelligence & Analytics</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Estruturação de dados brutos em dashboards executivos dinâmicos, inteligência preditiva e escuta digital de redes sociais (Social Listening).
+                        </p>
+                        <ul class="space-y-2.5 text-xs text-slate-300 mb-8">
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-blue"></i> Dashboards em PowerBI / Looker / Custom</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-blue"></i> Monitoramento de Sentimento Digital</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-blue"></i> Modelagem de Churn e Retenção</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-accent-blue"></i> Mineração de Dados Qualitativos com IA</li>
+                        </ul>
+                        <a href="#contato" class="inline-flex items-center text-sm font-semibold text-accent-blue hover:text-white transition-colors">
+                            Saiba mais sobre BI e Analytics <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Data Lab / Chart Preview Section -->
+        <section id="dashboard" class="py-20 bg-navy-900 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-5 space-y-6">
+                        <span class="text-accent-cyan text-sm font-semibold tracking-widest uppercase">Data Lab Interativo</span>
+                        <h2 class="font-heading text-3xl sm:text-4xl font-bold text-white">Visualização Clara do Seu Cenário</h2>
+                        <p class="text-slate-300 leading-relaxed">
+                            Entregamos mais do que planilhas: fornecemos painéis interativos com cruzamentos complexos de variáveis socioeconômicas, demográficas e comportamentais.
+                        </p>
+
+                        <!-- Controls to change chart -->
+                        <div class="space-y-3 pt-4">
+                            <button onclick="updateChart('electoral')" id="btn-electoral" class="w-full text-left p-4 rounded-xl bg-navy-800 border border-accent-cyan/40 text-white font-medium flex items-center justify-between transition-all">
+                                <span class="flex items-center gap-3">
+                                    <i data-lucide="pie-chart" class="w-5 h-5 text-accent-cyan"></i>
+                                    Intenção de Voto (Cenário Eleitoral)
+                                </span>
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="updateChart('market')" id="btn-market" class="w-full text-left p-4 rounded-xl bg-navy-800/40 border border-slate-800 text-slate-400 font-medium hover:border-slate-700 flex items-center justify-between transition-all">
+                                <span class="flex items-center gap-3">
+                                    <i data-lucide="bar-chart-2" class="w-5 h-5 text-accent-gold"></i>
+                                    Aceitação de Produto & Teste de Preço
+                                </span>
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="updateChart('sentiment')" id="btn-sentiment" class="w-full text-left p-4 rounded-xl bg-navy-800/40 border border-slate-800 text-slate-400 font-medium hover:border-slate-700 flex items-center justify-between transition-all">
+                                <span class="flex items-center gap-3">
+                                    <i data-lucide="trending-up" class="w-5 h-5 text-accent-blue"></i>
+                                    Tracking de Rejeição e Sentimento
+                                </span>
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="lg:col-span-7 bg-navy-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-2xl relative">
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-4 mb-6">
+                            <div>
+                                <h3 id="chartTitle" class="text-white font-bold text-lg">Simulação: Intenção de Voto Estimada</h3>
+                                <p id="chartSubtitle" class="text-slate-400 text-xs">Amostra N=2.000 entrevistados | Margem de Erro 2.2%</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan text-xs font-semibold">
+                                Live Data
+                            </span>
+                        </div>
+                        <div class="relative h-72 sm:h-80">
+                            <canvas id="interactiveChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Methodological Differentials Section -->
+        <section id="diferenciais" class="py-24 bg-navy-800/30 border-y border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-accent-cyan text-sm font-semibold tracking-widest uppercase mb-3">Por que a DataMetrics?</h2>
+                    <p class="font-heading text-3xl sm:text-4xl font-bold text-white">Rigor Científico com Velocidade Digital</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="p-6 rounded-xl bg-navy-900 border border-slate-800">
+                        <div class="w-12 h-12 rounded-lg bg-accent-cyan/10 text-accent-cyan flex items-center justify-center mb-5">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-lg mb-2">Conformidade Total</h3>
+                        <p class="text-slate-400 text-sm">Registro regular de pesquisas no Sistema PesqEle do TSE e auditoria contínua de proteção de dados conforme LGPD.</p>
+                    </div>
+
+                    <div class="p-6 rounded-xl bg-navy-900 border border-slate-800">
+                        <div class="w-12 h-12 rounded-lg bg-accent-gold/10 text-accent-gold flex items-center justify-center mb-5">
+                            <i data-lucide="map-pin" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-lg mb-2">Geolocalização & CAPI</h3>
+                        <p class="text-slate-400 text-sm">Coleta presencial por tablet/smartphone com verificação de coordenadas de GPS e controle de qualidade de áudio em tempo real.</p>
+                    </div>
+
+                    <div class="p-6 rounded-xl bg-navy-900 border border-slate-800">
+                        <div class="w-12 h-12 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center mb-5">
+                            <i data-lucide="cpu" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-lg mb-2">Amostragem Ponderada</h3>
+                        <p class="text-slate-400 text-sm">Metodologia estatística com estratificação por sexo, idade, escolaridade e renda conforme dados oficiais do IBGE.</p>
+                    </div>
+
+                    <div class="p-6 rounded-xl bg-navy-900 border border-slate-800">
+                        <div class="w-12 h-12 rounded-lg bg-accent-cyan/10 text-accent-cyan flex items-center justify-center mb-5">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-lg mb-2">Agilidade na Entrega</h3>
+                        <p class="text-slate-400 text-sm">Acesso aos relatórios consolidados em até 48h após a conclusão do campo com apresentações executivas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Sample Calculator / Budget Estimator -->
+        <section id="simulador" class="py-24 bg-navy-900">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gradient-to-b from-navy-800 to-navy-900 border border-slate-700 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-80 h-80 bg-accent-cyan/5 rounded-full filter blur-[80px]"></div>
+
+                    <div class="text-center max-w-2xl mx-auto mb-10">
+                        <span class="text-accent-cyan text-xs font-semibold tracking-widest uppercase bg-accent-cyan/10 px-3 py-1 rounded-full border border-accent-cyan/30">Ferramenta Interativa</span>
+                        <h2 class="font-heading text-3xl font-bold text-white mt-4">Calculadora de Amostra & Recomendação</h2>
+                        <p class="text-slate-300 text-sm mt-2">Estime o número necessário de entrevistas e descubra a metodologia ideal para seu projeto.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <!-- Inputs -->
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Tipo de Pesquisa</label>
+                                <select id="calcType" onchange="calculateSample()" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-cyan text-sm">
+                                    <option value="eleitoral">Pesquisa Eleitoral / Municipal</option>
+                                    <option value="mercado">Pesquisa de Mercado / Produto</option>
+                                    <option value="satisfacao">Satisfação de Clientes / NPS</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">População Total Estimada</label>
+                                <select id="calcPopulation" onchange="calculateSample()" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-cyan text-sm">
+                                    <option value="10000">Até 10.000 (Pequeno município / Base restrita)</option>
+                                    <option value="50000" selected>10.000 a 100.000 (Médio Porte)</option>
+                                    <option value="500000">100.000 a 500.000 (Grande Porte)</option>
+                                    <option value="10000000">Acima de 500.000 (Metropolitana / Estadual)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Margem de Erro Desejada</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button type="button" onclick="setMargin(2)" id="margin-2" class="margin-btn py-2.5 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 hover:border-accent-cyan">± 2.0%</button>
+                                    <button type="button" onclick="setMargin(3)" id="margin-3" class="margin-btn py-2.5 rounded-lg border border-accent-cyan bg-accent-cyan/10 text-sm font-semibold text-accent-cyan">± 3.0%</button>
+                                    <button type="button" onclick="setMargin(4)" id="margin-4" class="margin-btn py-2.5 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 hover:border-accent-cyan">± 4.0%</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Result Display -->
+                        <div class="bg-navy-900/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-full">
+                            <div>
+                                <span class="text-xs text-slate-400 font-medium">Recomendação Estatística</span>
+                                <div class="flex items-baseline gap-2 mt-2">
+                                    <span id="sampleResult" class="font-heading text-4xl font-extrabold text-accent-cyan">600</span>
+                                    <span class="text-slate-400 text-sm font-medium">entrevistas recomendadas</span>
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-slate-800 space-y-3">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-slate-400">Nível de Confiança:</span>
+                                        <span class="text-white font-semibold">95%</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-slate-400">Metodologia Sugerida:</span>
+                                        <span id="methodologyResult" class="text-accent-gold font-semibold">Presencial Quantitativa (CAPI)</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-slate-400">Tempo Médio de Campo:</span>
+                                        <span id="timeResult" class="text-white font-semibold">3 a 5 dias úteis</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="#contato" onclick="fillFormWithCalc()" class="mt-6 w-full py-3 rounded-xl bg-accent-cyan text-navy-900 font-bold text-center text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                                solicitar Proposta com Esta Amostra
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials / Success Cases -->
+        <section class="py-24 bg-navy-800/40 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-accent-cyan text-sm font-semibold tracking-widest uppercase mb-3">Casos de Sucesso</h2>
+                    <p class="font-heading text-3xl font-bold text-white">Reconhecida por Lideranças e Marcas</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="p-6 rounded-2xl bg-navy-900 border border-slate-800 relative">
+                        <div class="flex items-center gap-1 text-accent-gold mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 italic">
+                            "A precisão do tracking eleitoral da DataMetrics na nossa campanha para prefeitura foi cirúrgica. Conseguimos redirecionar o discurso nos últimos 10 dias de campanha e obter a virada nas urnas."
+                        </p>
+                        <div>
+                            <div class="text-white font-bold text-sm">Coordenação de Campanha Política</div>
+                            <div class="text-slate-400 text-xs">Município de Grande Porte - SP</div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-navy-900 border border-slate-800 relative">
+                        <div class="flex items-center gap-1 text-accent-gold mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 italic">
+                            "A pesquisa de aceitação de produto evitou um investimento equivocado em uma nova linha de bebidas. O teste de conceito ajustou a embalagem e o sabor antes do lançamento nacional."
+                        </p>
+                        <div>
+                            <div class="text-white font-bold text-sm">Diretoria de Marketing</div>
+                            <div class="text-slate-400 text-xs">Indústria de Alimentos & Bebidas</div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-navy-900 border border-slate-800 relative">
+                        <div class="flex items-center gap-1 text-accent-gold mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-accent-gold"></i>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 italic">
+                            "A integração do dashboard customizado simplificou nossa tomada de decisão na diretoria. Acompanhamos a percepção da marca em tempo real com dados extremamente confiáveis."
+                        </p>
+                        <div>
+                            <div class="text-white font-bold text-sm">Gerência de Inteligência de Mercado</div>
+                            <div class="text-slate-400 text-xs">Rede do Setor de Varejo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact & Proposal Form Section -->
+        <section id="contato" class="py-24 bg-navy-900 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <!-- Contact Info -->
+                    <div class="lg:col-span-5 space-y-8">
+                        <div>
+                            <span class="text-accent-cyan text-sm font-semibold tracking-widest uppercase">Atendimento Personalizado</span>
+                            <h2 class="font-heading text-3xl sm:text-4xl font-bold text-white mt-2">Inicie Seu Projeto com Dados Seguros</h2>
+                            <p class="text-slate-400 mt-4 leading-relaxed">
+                                Fale com nossos consultores e estatísticos para desenhar o projeto ideal para suas necessidades estratégicas.
+                            </p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 rounded-xl bg-navy-800 border border-slate-700 text-accent-cyan">
+                                    <i data-lucide="phone" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider font-semibold">Telefone / WhatsApp</div>
+                                    <div class="text-white font-medium text-lg">+55 (11) 98765-4321</div>
+                                    <div class="text-slate-400 text-xs">Atendimento em horário comercial</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 rounded-xl bg-navy-800 border border-slate-700 text-accent-cyan">
+                                    <i data-lucide="mail" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider font-semibold">E-mail Institucional</div>
+                                    <div class="text-white font-medium">contato@datametricsresearch.com.br</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 rounded-xl bg-navy-800 border border-slate-700 text-accent-cyan">
+                                    <i data-lucide="building-2" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider font-semibold">Sede Operacional</div>
+                                    <div class="text-white font-medium">Av. Paulista, 1000 - Bela Vista</div>
+                                    <div class="text-slate-400 text-xs">São Paulo / SP - Brasil</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Quick Link -->
+                        <div class="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/50 to-navy-800 border border-emerald-500/30">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i data-lucide="message-square" class="w-6 h-6 text-emerald-400"></i>
+                                <span class="font-bold text-white text-base">Atendimento Rápido via WhatsApp</span>
+                            </div>
+                            <p class="text-slate-300 text-xs mb-4">Precisa de um orçamento urgente para pesquisa eleitoral ou de mercado?</p>
+                            <a href="https://wa.me/5511987654321?text=Olá,%20gostaria%20de%20solicitar%20um%20orçamento%20de%20pesquisa." target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-500 text-slate-950 font-bold text-sm hover:bg-emerald-400 transition-colors">
+                                Falar no WhatsApp Agora
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="lg:col-span-7 bg-navy-800/80 border border-slate-700 rounded-3xl p-8 shadow-2xl relative">
+                        <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nome Completo *</label>
+                                    <input type="text" required placeholder="Seu nome" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">E-mail Profissional *</label>
+                                    <input type="email" required placeholder="seu@email.com" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan text-sm">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Telefone / WhatsApp *</label>
+                                    <input type="tel" required placeholder="(11) 99999-9999" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Empresa / Partido / Organização</label>
+                                    <input type="text" placeholder="Nome da instituição" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan text-sm">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Interesse Principal</label>
+                                <select id="formInterest" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-cyan text-sm">
+                                    <option value="eleitoral">Pesquisa Eleitoral / Opinião Pública</option>
+                                    <option value="mercado">Pesquisa de Mercado / Teste de Produto</option>
+                                    <option value="bi">Business Intelligence / Dashboard Customizado</option>
+                                    <option value="outro">Outra Solução</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Detalhes do Projeto / Mensagem *</label>
+                                <textarea id="formMessage" rows="4" required placeholder="Conte-nos sobre os objetivos da pesquisa, cidade/região de interesse ou prazo estimado..." class="w-full bg-navy-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-cyan text-sm resize-none"></textarea>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="lgpdCheck" required class="rounded bg-navy-900 border-slate-700 text-accent-cyan focus:ring-0">
+                                <label for="lgpdCheck" class="text-xs text-slate-400">
+                                    Concordo com o tratamento dos meus dados exclusivamente para fins de atendimento comercial (LGPD).
+                                </label>
+                            </div>
+
+                            <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-cyan text-navy-900 font-bold text-base hover:shadow-lg hover:shadow-accent-cyan/25 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                                Enviar Solicitação de Orçamento
+                            </button>
+
+                            <!-- Success Message Box -->
+                            <div id="successBox" class="hidden p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm text-center font-medium">
+                                Solicitação enviada com sucesso! Nossos estatísticos entrarão em contato em até 2 horas úteis.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy-900 border-t border-slate-800 py-12 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 flex items-center justify-center text-accent-cyan font-bold">DM</div>
+                        <span class="font-heading font-bold text-lg text-white">DataMetrics</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Empresa especializada em pesquisas de opinião pública, análise eleitoral e inteligência de mercado com amostragem probabilística e rigor estatístico.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">Soluções</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#servicos" class="hover:text-accent-cyan">Pesquisa Eleitoral</a></li>
+                        <li><a href="#servicos" class="hover:text-accent-cyan">Tracking Político</a></li>
+                        <li><a href="#servicos" class="hover:text-accent-cyan">Teste de Conceito & Produto</a></li>
+                        <li><a href="#servicos" class="hover:text-accent-cyan">Business Intelligence</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">Institucional</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#diferenciais" class="hover:text-accent-cyan">Metodologia Científica</a></li>
+                        <li><a href="#simulador" class="hover:text-accent-cyan">Calculadora Amostral</a></li>
+                        <li><a href="#dashboard" class="hover:text-accent-cyan">Data Lab Interativo</a></li>
+                        <li><a href="#contato" class="hover:text-accent-cyan">Contato Comercial</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">Compliance & Legal</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><span class="text-slate-400">Registro TSE nº 2024/SP</span></li>
+                        <li><a href="#" class="hover:text-accent-cyan">Política de Privacidade (LGPD)</a></li>
+                        <li><a href="#" class="hover:text-accent-cyan">Termos de Uso</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
+                <div>&copy; 2026 DataMetrics Consultoria e Pesquisas. Todos os direitos reservados.</div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-accent-cyan">LinkedIn</a>
+                    <a href="#" class="hover:text-accent-cyan">Instagram</a>
+                    <a href="#" class="hover:text-accent-cyan">Twitter/X</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Chart.js Interactive Setup
+        let currentChart = null;
+        let marginValue = 3;
+
+        const chartConfigs = {
+            electoral: {
+                title: 'Simulação: Intenção de Voto Estimada',
+                subtitle: 'Amostra N=2.000 entrevistados | Margem de Erro 2.2%',
+                type: 'bar',
+                data: {
+                    labels: ['Candidato A', 'Candidato B', 'Candidato C', 'Nulos/Brancos', 'Indecisos'],
+                    datasets: [{
+                        label: 'Intenção de Voto (%)',
+                        data: [38.5, 31.2, 14.8, 8.5, 7.0],
+                        backgroundColor: ['#00F0FF', '#3A86FF', '#FFB800', '#64748B', '#475569'],
+                        borderRadius: 8
+                    }]
+                }
+            },
+            market: {
+                title: 'Teste de Aceitação de Novo Produto',
+                subtitle: 'Amostra N=800 Consumidores | Potencial de Compra',
+                type: 'pie',
+                data: {
+                    labels: ['Compraria Certeza', 'Provavelmente Compraria', 'Talvez Compraria', 'Não Compraria'],
+                    datasets: [{
+                        data: [42, 28, 18, 12],
+                        backgroundColor: ['#00F0FF', '#3A86FF', '#FFB800', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                }
+            },
+            sentiment: {
+                title: 'Tracking de Sentimento e Rejeição',
+                subtitle: 'Acompanhamento Semanal nas Redes e Pesquisas Telefônicas',
+                type: 'line',
+                data: {
+                    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'],
+                    datasets: [
+                        {
+                            label: 'Aprovação (%)',
+                            data: [45, 48, 52, 51, 56],
+                            borderColor: '#00F0FF',
+                            backgroundColor: 'rgba(0, 240, 255, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Rejeição (%)',
+                            data: [38, 35, 30, 32, 28],
+                            borderColor: '#EF4444',
+                            backgroundColor: 'transparent',
+                            tension: 0.4
+                        }
+                    ]
+                }
+            }
+        };
+
+        function initChart() {
+            const ctx = document.getElementById('interactiveChart').getContext('2d');
+            const config = chartConfigs.electoral;
+
+            currentChart = new Chart(ctx, {
+                type: config.type,
+                data: config.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94A3B8', font: { family: 'Inter' } }
+                        }
+                    },
+                    scales: config.type !== 'pie' ? {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94A3B8' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94A3B8' }
+                        }
+                    } : {}
+                }
+            });
+        }
+
+        function updateChart(key) {
+            const config = chartConfigs[key];
+            document.getElementById('chartTitle').innerText = config.title;
+            document.getElementById('chartSubtitle').innerText = config.subtitle;
+
+            // Reset buttons style
+            ['electoral', 'market', 'sentiment'].forEach(k => {
+                const btn = document.getElementById(`btn-${k}`);
+                if (k === key) {
+                    btn.className = "w-full text-left p-4 rounded-xl bg-navy-800 border border-accent-cyan/40 text-white font-medium flex items-center justify-between transition-all";
+                } else {
+                    btn.className = "w-full text-left p-4 rounded-xl bg-navy-800/40 border border-slate-800 text-slate-400 font-medium hover:border-slate-700 flex items-center justify-between transition-all";
+                }
+            });
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const ctx = document.getElementById('interactiveChart').getContext('2d');
+            currentChart = new Chart(ctx, {
+                type: config.type,
+                data: config.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94A3B8' } }
+                    },
+                    scales: config.type !== 'pie' ? {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94A3B8' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94A3B8' }
+                        }
+                    } : {}
+                }
+            });
+        }
+
+        // Sample Calculator Functions
+        function setMargin(val) {
+            marginValue = val;
+            [2, 3, 4].forEach(m => {
+                const btn = document.getElementById(`margin-${m}`);
+                if (m === val) {
+                    btn.className = "margin-btn py-2.5 rounded-lg border border-accent-cyan bg-accent-cyan/10 text-sm font-semibold text-accent-cyan";
+                } else {
+                    btn.className = "margin-btn py-2.5 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 hover:border-accent-cyan";
+                }
+            });
+            calculateSample();
+        }
+
+        function calculateSample() {
+            const pop = parseInt(document.getElementById('calcPopulation').value);
+            const type = document.getElementById('calcType').value;
+            
+            // Simplified statistically-inspired heuristic calculation for demo UI
+            let sample = 400;
+            if (marginValue === 2) sample = 1500;
+            else if (marginValue === 3) sample = 600;
+            else if (marginValue === 4) sample = 380;
+
+            if (pop < 15000) {
+                sample = Math.round(sample * 0.7);
+            }
+
+            document.getElementById('sampleResult').innerText = sample.toLocaleString('pt-BR');
+
+            // Set methodology recommendation
+            const methEl = document.getElementById('methodologyResult');
+            const timeEl = document.getElementById('timeResult');
+
+            if (type === 'eleitoral') {
+                methEl.innerText = "Presencial Quantitativa (CAPI) / Domiciliar";
+                timeEl.innerText = "3 a 5 dias úteis";
+            } else if (type === 'mercado') {
+                methEl.innerText = "Mista (Online + Intercept Presencial)";
+                timeEl.innerText = "5 a 7 dias úteis";
+            } else {
+                methEl.innerText = "CATI (Telefônica) ou Painel Digital";
+                timeEl.innerText = "2 a 4 dias úteis";
+            }
+        }
+
+        function fillFormWithCalc() {
+            const sample = document.getElementById('sampleResult').innerText;
+            const type = document.getElementById('calcType').options[document.getElementById('calcType').selectedIndex].text;
+            const msgBox = document.getElementById('formMessage');
+            
+            msgBox.value = `Solicitação via Calculadora: Projeto do tipo "${type}" com estimativa de amostragem de ${sample} entrevistas (Margem de erro ±${marginValue}%).`;
+        }
+
+        // Form Submit Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const successBox = document.getElementById('successBox');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processando...`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                successBox.classList.remove('hidden');
+            }, 1200);
+        }
+
+        // Initialize on Load
+        window.onload = function() {
+            initChart();
+            calculateSample();
+        };
+    </script>
+</body>
+</html>
